@@ -33,8 +33,8 @@ try:
         retention=settings.log_retention,
         compression="zip",
     )
-except Exception:
-    pass  # Non-fatal: skip file logging if dir unavailable
+except Exception as e:
+    logger.warning(f"Failed to initialize file logging: {e}")
 
 # Public alias
 log = logger

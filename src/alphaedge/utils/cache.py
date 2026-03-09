@@ -35,7 +35,7 @@ _redis_client = _get_redis()
 
 def _key(prefix: str, params: dict) -> str:
     raw = json.dumps(params, sort_keys=True)
-    return f"alphaedge:{prefix}:{hashlib.md5(raw.encode()).hexdigest()}"
+    return f"alphaedge:{prefix}:{hashlib.md5(raw.encode(), usedforsecurity=False).hexdigest()}"
 
 
 def cache_get(prefix: str, params: dict) -> Optional[Any]:

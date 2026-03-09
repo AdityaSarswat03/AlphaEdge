@@ -20,13 +20,13 @@ class Settings(BaseSettings):
     secret_key: str = Field(default="dev-secret-key-change-in-production")
 
     # ── API ──────────────────────────────────────────────────────
-    api_host: str = "0.0.0.0"
+    api_host: str = "0.0.0.0"  # nosec B104 (Required for Docker)
     api_port: int = 8000
     api_workers: int = 4
     api_reload: bool = True
 
     # ── Dashboard ────────────────────────────────────────────────
-    dashboard_host: str = "0.0.0.0"
+    dashboard_host: str = "0.0.0.0"  # nosec B104 (Required for Docker)
     dashboard_port: int = 8501
 
     # ── Firebase (Database & Backend) ────────────────────────────
@@ -79,7 +79,7 @@ class Settings(BaseSettings):
             self.debug = False
             self.api_reload = False
             # OWASP: Refuse to start with the default dev secret key.
-            if self.secret_key == "dev-secret-key-change-in-production":
+            if self.secret_key == "dev-secret-key-change-in-production":  # nosec B105
                 raise ValueError(
                     "SECRET_KEY must be changed from default before running in production. "
                     "Generate one with: python -c 'import secrets; print(secrets.token_urlsafe(64))'"

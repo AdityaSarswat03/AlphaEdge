@@ -18,9 +18,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      - run: pip install ruff black
+      - run: pip install ruff black bandit
       - run: ruff check src/ tests/
       - run: black --check src/ tests/
+      - name: Run Bandit Security Scan
+        run: bandit -r src/ -c pyproject.toml
 
   test:
     name: Tests
