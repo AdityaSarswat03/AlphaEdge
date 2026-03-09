@@ -144,7 +144,7 @@ class LSTMModel(BaseModel):
         log.info(f"LSTM saved → {path}")
 
     def load(self, path: str) -> None:
-        ckpt = torch.load(path, map_location=self.device, weights_only=True)
+        ckpt = torch.load(path, map_location=self.device, weights_only=False)
         self.scaler = ckpt["scaler"]
         self.sequence_length = ckpt["seq_len"]
         self.hidden_size = ckpt["hidden"]

@@ -156,7 +156,7 @@ class TransformerModel(BaseModel):
         log.info(f"Transformer saved → {path}")
 
     def load(self, path: str) -> None:
-        ckpt = torch.load(path, map_location=self.device, weights_only=True)
+        ckpt = torch.load(path, map_location=self.device, weights_only=False)
         self.scaler = ckpt["scaler"]
         cfg = ckpt["config"]
         self.sequence_length = cfg["seq_len"]
