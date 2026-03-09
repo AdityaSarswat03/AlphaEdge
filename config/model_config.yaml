@@ -1,0 +1,75 @@
+# ── AlphaEdge Model Configuration ────────────────────────────────
+
+training:
+  test_size: 0.2
+  validation_size: 0.1
+  random_state: 42
+  cross_validation_folds: 5
+
+xgboost:
+  n_estimators: 300
+  max_depth: 6
+  learning_rate: 0.01
+  subsample: 0.8
+  colsample_bytree: 0.8
+  reg_alpha: 0.1
+  reg_lambda: 1.0
+  early_stopping_rounds: 20
+
+lstm:
+  hidden_size: 64
+  num_layers: 2
+  dropout: 0.2
+  sequence_length: 20
+  epochs: 50
+  batch_size: 32
+  learning_rate: 0.001
+
+transformer:
+  d_model: 64
+  nhead: 4
+  num_layers: 2
+  dropout: 0.1
+  sequence_length: 20
+  epochs: 50
+  batch_size: 32
+  learning_rate: 0.0005
+
+ensemble:
+  weights:
+    xgboost: 0.45
+    lstm: 0.30
+    transformer: 0.25
+
+features:
+  technical_indicators:
+    - sma_20
+    - sma_50
+    - ema_20
+    - rsi
+    - macd
+    - bb_upper
+    - bb_lower
+    - atr
+    - adx
+    - cci
+    - obv
+    - stoch_k
+    - stoch_d
+    - williams_r
+  candlestick_patterns: true
+  price_features: true
+  volume_features: true
+  momentum_features: true
+  volatility_features: true
+  time_features: true
+
+backtesting:
+  initial_capital: 100000
+  commission: 0.001
+  slippage: 0.0005
+  strategies:
+    - buy_and_hold
+    - mean_reversion
+    - momentum
+    - rsi

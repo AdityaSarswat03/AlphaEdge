@@ -1,0 +1,44 @@
+# ── AlphaEdge Ticker List ────────────────────────────────────────
+# Tickers to track, train, and predict
+
+tickers:
+  # Nifty 50 – Large-cap
+  - RELIANCE
+  - TCS
+  - INFY
+  - HDFCBANK
+  - ICICIBANK
+  - HINDUNILVR
+  - BHARTIARTL
+  - ITC
+  - KOTAKBANK
+  - LT
+
+  # Mid-cap picks
+  - TATAPOWER
+  - IRCTC
+  - ZOMATO
+  - PAYTM
+  - DELHIVERY
+
+exchanges:
+  default: nse
+  mapping:
+    RELIANCE: nse
+    TCS: nse
+    INFY: nse
+
+# Watchlist groups
+watchlists:
+  nifty_top5:
+    - RELIANCE
+    - TCS
+    - INFY
+    - HDFCBANK
+    - ICICIBANK
+  tech:
+    - TCS
+    - INFY
+    - WIPRO
+    - HCLTECH
+    - TECHM

@@ -1,0 +1,74 @@
+version: "3.9"
+
+services:
+  api:
+    build: .
+    container_name: alphaedge-api
+    ports:
+      - "8000:8000"
+    env_file: .env
+    environment:
+      - APP_ENV=production
+      - DEBUG=false
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - ENABLE_REDIS_CACHE=true
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./config:/app/config
+    command: gunicorn alphaedge.api.main:app --config gunicorn.conf.py --bind 0.0.0.0:8000
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import httpx; httpx.get('http://localhost:8000/health').raise_for_status()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+    depends_on:
+      - redis
+
+  dashboard:
+    build: .
+    container_name: alphaedge-dashboard
+    ports:
+      - "8501:8501"
+    env_file: .env
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./config:/app/config
+    command: streamlit run src/dashboard/app.py --server.port 8501 --server.address 0.0.0.0
+    depends_on:
+      - api
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+
+  redis:
+    image: redis:7-alpine
+    container_name: alphaedge-redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  # Optional: Firebase emulator for local development
+  firebase-emulator:
+    image: andreysenov/firebase-tools:latest
+    container_name: alphaedge-firebase-emulator
+    ports:
+      - "8080:8080"   # Firestore emulator
+      - "9099:9099"   # Auth emulator
+      - "4000:4000"   # Emulator UI
+    volumes:
+      - ./firebase.json:/home/node/firebase.json
+    working_dir: /home/node
+    command: firebase emulators:start --only firestore,auth --project demo-alphaedge
+    profiles:
+      - emulator       # only starts with: docker-compose --profile emulator up
