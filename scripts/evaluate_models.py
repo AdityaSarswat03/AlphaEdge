@@ -5,6 +5,7 @@ Evaluate trained models on held-out test data.
 Usage:
     python scripts/evaluate_models.py --ticker RELIANCE
 """
+
 import argparse
 import sys
 import pathlib
@@ -37,8 +38,9 @@ def evaluate(ticker: str, period: str = "2y", exchange: str = "nse") -> dict:
     processed = processor.process(raw)
     featured = engineer.transform(processed)
 
-    feature_cols = [c for c in featured.columns
-                    if c not in ("Open", "High", "Low", "Close", "Volume", "target")]
+    feature_cols = [
+        c for c in featured.columns if c not in ("Open", "High", "Low", "Close", "Volume", "target")
+    ]
     X = featured[feature_cols].dropna()
     y = featured.loc[X.index, "target"]
     mask = y.notna()
@@ -68,14 +70,16 @@ def evaluate(ticker: str, period: str = "2y", exchange: str = "nse") -> dict:
             preds = model.predict(X_test)
             if preds is None or len(preds) == 0:
                 continue
-            y_true = y_test.values[:len(preds)]
+            y_true = y_test.values[: len(preds)]
             results[name] = {
                 "mae": float(mean_absolute_error(y_true, preds)),
                 "rmse": float(np.sqrt(mean_squared_error(y_true, preds))),
                 "r2": float(r2_score(y_true, preds)),
                 "samples": len(preds),
             }
-            logger.info(f"  {name}: MAE={results[name]['mae']:.2f}  RMSE={results[name]['rmse']:.2f}  R²={results[name]['r2']:.4f}")
+            logger.info(
+                f"  {name}: MAE={results[name]['mae']:.2f}  RMSE={results[name]['rmse']:.2f}  R²={results[name]['r2']:.4f}"
+            )
         except Exception as exc:
             logger.error(f"  {name} evaluation failed: {exc}")
 

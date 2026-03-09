@@ -5,6 +5,7 @@ Train all AlphaEdge models on configured tickers.
 Usage:
     python scripts/train_models.py --tickers RELIANCE TCS INFY --period 2y
 """
+
 import argparse
 import sys
 import pathlib
@@ -40,8 +41,11 @@ def train(tickers: list[str], period: str = "2y", exchange: str = "nse") -> None
             processed = processor.process(raw)
             featured = engineer.transform(processed)
 
-            feature_cols = [c for c in featured.columns
-                           if c not in ("Open", "High", "Low", "Close", "Volume", "target")]
+            feature_cols = [
+                c
+                for c in featured.columns
+                if c not in ("Open", "High", "Low", "Close", "Volume", "target")
+            ]
             X = featured[feature_cols].dropna()
             y = featured.loc[X.index, "target"]
             mask = y.notna()
@@ -55,19 +59,19 @@ def train(tickers: list[str], period: str = "2y", exchange: str = "nse") -> None
             xgb = XGBoostModel()
             xgb.train(X, y)
             xgb.save(str(model_dir / f"{ticker}_xgboost.json"))
-            logger.info(f"  ✓ XGBoost saved")
+            logger.info("  ✓ XGBoost saved")
 
             # LSTM
             lstm = LSTMModel(epochs=20)
             lstm.train(X, y)
             lstm.save(str(model_dir / f"{ticker}_lstm.pt"))
-            logger.info(f"  ✓ LSTM saved")
+            logger.info("  ✓ LSTM saved")
 
             # Transformer
             tfm = TransformerModel(epochs=20)
             tfm.train(X, y)
             tfm.save(str(model_dir / f"{ticker}_transformer.pt"))
-            logger.info(f"  ✓ Transformer saved")
+            logger.info("  ✓ Transformer saved")
 
             logger.success(f"All models trained for {ticker}")
 

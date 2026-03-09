@@ -5,6 +5,7 @@ Update local data cache for all tracked tickers.
 Usage:
     python scripts/update_data.py
 """
+
 import argparse
 import sys
 import pathlib
