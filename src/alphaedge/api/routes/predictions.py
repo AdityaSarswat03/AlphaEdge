@@ -6,10 +6,11 @@ Security:
   - GET path/query params validated with Path() / Query() constraints.
   - Error responses sanitised — raw exception messages never reach the client.
 """
+
 import re
 
 from fastapi import APIRouter, HTTPException, Depends, Path, Query
-from typing import List, Optional
+from typing import Optional
 from alphaedge.api.schemas import (
     PredictionRequest,
     PredictionResponse,
@@ -23,8 +24,18 @@ from alphaedge.api._error_utils import safe_error_detail
 
 router = APIRouter()
 
-DEFAULT_TICKERS = ["RELIANCE", "TCS", "INFY", "HDFCBANK", "ICICIBANK",
-                   "HINDUNILVR", "SBIN", "BHARTIARTL", "KOTAKBANK", "WIPRO"]
+DEFAULT_TICKERS = [
+    "RELIANCE",
+    "TCS",
+    "INFY",
+    "HDFCBANK",
+    "ICICIBANK",
+    "HINDUNILVR",
+    "SBIN",
+    "BHARTIARTL",
+    "KOTAKBANK",
+    "WIPRO",
+]
 
 # Shared ticker regex (same as schemas._TICKER_PATTERN)
 _TICKER_RE = re.compile(r"^[A-Z0-9&._-]{1,20}$")
@@ -49,10 +60,13 @@ async def predict_stock(
             include_confidence=request.include_confidence,
         )
         # Persist to Firebase
-        save_prediction(request.ticker, {
-            **result,
-            "requested_by": user.user_id if user else "anonymous",
-        })
+        save_prediction(
+            request.ticker,
+            {
+                **result,
+                "requested_by": user.user_id if user else "anonymous",
+            },
+        )
         return result
     except Exception as e:
         log.error(f"POST /predict failed: {e}")

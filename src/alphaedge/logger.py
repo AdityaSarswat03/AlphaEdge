@@ -1,6 +1,7 @@
 """
 Logging configuration for AlphaEdge using Loguru.
 """
+
 import sys
 from loguru import logger
 from alphaedge.config import settings

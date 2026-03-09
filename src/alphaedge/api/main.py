@@ -7,6 +7,7 @@ Security notes:
   - Root endpoint reveals no infrastructure details in production.
   - Health endpoint omits internal service names in production.
 """
+
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -90,7 +91,7 @@ if settings.app_env == "production" and settings.trusted_hosts:
 # Routers
 app.include_router(predictions.router, prefix="/api/v1", tags=["Predictions"])
 app.include_router(backtesting.router, prefix="/api/v1", tags=["Backtesting"])
-app.include_router(analytics.router,   prefix="/api/v1", tags=["Analytics"])
+app.include_router(analytics.router, prefix="/api/v1", tags=["Analytics"])
 
 
 @app.get("/", tags=["Root"])
@@ -113,6 +114,7 @@ async def root():
 @app.get("/health", tags=["Root"])
 async def health():
     from alphaedge.utils.firebase_db import check_connection as fb_check
+
     firebase_ok = fb_check()
 
     # OWASP: Don't expose internal service topology in production.

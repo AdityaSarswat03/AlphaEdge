@@ -5,6 +5,7 @@ OWASP: Never expose raw exception messages, stack traces, or internal
 file paths to external clients.  In production, return a generic message;
 in development, forward the original string for debugging convenience.
 """
+
 from alphaedge.config import settings
 
 # Exception classes that are safe to surface verbatim (e.g. domain errors).

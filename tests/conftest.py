@@ -1,10 +1,11 @@
 """
 Shared pytest fixtures for AlphaEdge tests.
 """
+
 import pytest
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 @pytest.fixture
@@ -14,13 +15,16 @@ def sample_ohlcv() -> pd.DataFrame:
     n = 100
     dates = pd.bdate_range(end=datetime.now(), periods=n)
     close = 1000 + np.cumsum(np.random.randn(n) * 10)
-    return pd.DataFrame({
-        "Open": close - np.random.rand(n) * 5,
-        "High": close + np.random.rand(n) * 10,
-        "Low": close - np.random.rand(n) * 10,
-        "Close": close,
-        "Volume": np.random.randint(100_000, 1_000_000, n),
-    }, index=dates)
+    return pd.DataFrame(
+        {
+            "Open": close - np.random.rand(n) * 5,
+            "High": close + np.random.rand(n) * 10,
+            "Low": close - np.random.rand(n) * 10,
+            "Close": close,
+            "Volume": np.random.randint(100_000, 1_000_000, n),
+        },
+        index=dates,
+    )
 
 
 @pytest.fixture

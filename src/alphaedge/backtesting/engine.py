@@ -1,10 +1,9 @@
 """
 Backtesting Engine – simulates trading with realistic costs.
 """
+
 import pandas as pd
-import numpy as np
-from typing import Dict, Any, Optional
-from alphaedge.config import settings
+from typing import Dict, Any
 from alphaedge.logger import log
 from alphaedge.data.fetcher import DataFetcher
 from alphaedge.data.processor import DataProcessor
@@ -103,23 +102,27 @@ class Backtester:
                     cost = shares * exec_price * (1 + self.commission)
                     cash -= cost
                     position = shares
-                    trades.append({
-                        "date": str(row.get("Date", i)),
-                        "action": "BUY",
-                        "price": round(exec_price, 2),
-                        "shares": shares,
-                    })
+                    trades.append(
+                        {
+                            "date": str(row.get("Date", i)),
+                            "action": "BUY",
+                            "price": round(exec_price, 2),
+                            "shares": shares,
+                        }
+                    )
 
             elif signal == -1 and position > 0:
                 # Sell
                 proceeds = position * exec_price * (1 - self.commission)
                 cash += proceeds
-                trades.append({
-                    "date": str(row.get("Date", i)),
-                    "action": "SELL",
-                    "price": round(exec_price, 2),
-                    "shares": position,
-                })
+                trades.append(
+                    {
+                        "date": str(row.get("Date", i)),
+                        "action": "SELL",
+                        "price": round(exec_price, 2),
+                        "shares": position,
+                    }
+                )
                 position = 0
 
             equity.append(cash + position * price)

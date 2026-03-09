@@ -1,7 +1,7 @@
 """
 Tests for backtesting engine.
 """
-import pytest
+
 import pandas as pd
 import numpy as np
 
@@ -77,6 +77,7 @@ class TestBacktester:
             return sample_ohlcv
 
         from alphaedge.data import fetcher as fetcher_mod
+
         monkeypatch.setattr(fetcher_mod.DataFetcher, "fetch_stock_data", fake_fetch)
 
         bt = Backtester()

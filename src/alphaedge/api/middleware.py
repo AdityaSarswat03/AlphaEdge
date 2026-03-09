@@ -9,6 +9,7 @@ OWASP references:
   - https://cheatsheetseries.owasp.org/cheatsheets/REST_Security_Cheat_Sheet.html
   - https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html
 """
+
 import math
 import time
 import uuid
@@ -20,7 +21,6 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
 from alphaedge.logger import log
-
 
 # ── Rate Limiter ─────────────────────────────────────────────────
 # OWASP: "Implement rate limiting to prevent abuse."
@@ -97,7 +97,9 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             return None
         token = auth[7:]
         try:
-            import base64, json as _json
+            import base64
+            import json as _json
+
             # JWT = header.payload.signature — we want the payload
             payload_b64 = token.split(".")[1]
             # Fix padding
@@ -145,8 +147,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         if len(self._hits[key]) >= limit:
             retry_after = int(math.ceil(self._hits[key][0] + self.window - now))
             log.warning(
-                f"Rate limit exceeded: {key} "
-                f"({len(self._hits[key])}/{limit} in {self.window}s)"
+                f"Rate limit exceeded: {key} " f"({len(self._hits[key])}/{limit} in {self.window}s)"
             )
             return JSONResponse(
                 status_code=429,
@@ -175,6 +176,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
 # ── Security Headers ─────────────────────────────────────────────
 
+
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     """Add OWASP-recommended security headers to every response.
 
@@ -197,9 +199,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             "camera=(), microphone=(), geolocation=(), payment=()"
         )
         # -- Content-Security-Policy (API-only, very restrictive) --
-        response.headers["Content-Security-Policy"] = (
-            "default-src 'none'; frame-ancestors 'none'"
-        )
+        response.headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'"
         # -- HSTS — enforce HTTPS (1 year, include subdomains, preload-ready) --
         response.headers["Strict-Transport-Security"] = (
             "max-age=31536000; includeSubDomains; preload"
@@ -212,6 +212,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
 
 # ── Request ID ───────────────────────────────────────────────────
+
 
 class RequestIDMiddleware(BaseHTTPMiddleware):
     """Attach a unique X-Request-ID to every request/response for tracing."""

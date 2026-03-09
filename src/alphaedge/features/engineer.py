@@ -2,9 +2,10 @@
 Feature Engineering Pipeline – orchestrates technical indicators,
 candlestick patterns, and custom features.
 """
+
 import pandas as pd
 import numpy as np
-from typing import List, Optional
+from typing import List
 from alphaedge.logger import log
 from alphaedge.features.technical import TechnicalIndicators
 from alphaedge.features.patterns import CandlestickPatterns
@@ -68,8 +69,7 @@ class FeatureEngineer:
         df = df.ffill().bfill().fillna(0)
 
         self.feature_names = [
-            c for c in df.columns
-            if c not in ("Date", "Symbol", "Target", "Target_Direction")
+            c for c in df.columns if c not in ("Date", "Symbol", "Target", "Target_Direction")
         ]
         log.info(f"Feature engineering complete – {len(self.feature_names)} feature columns")
         return df

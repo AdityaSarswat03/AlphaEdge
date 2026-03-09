@@ -1,10 +1,10 @@
 """
 Trading strategies for the backtesting engine.
 """
+
 import pandas as pd
 import numpy as np
 from abc import ABC, abstractmethod
-from typing import List
 
 
 class Strategy(ABC):
@@ -49,7 +49,7 @@ class MeanReversionStrategy(Strategy):
         lower = sma - self.num_std * std
 
         signals = pd.Series(0, index=df.index)
-        signals[close < lower] = 1   # buy
+        signals[close < lower] = 1  # buy
         signals[close > upper] = -1  # sell
         return signals
 

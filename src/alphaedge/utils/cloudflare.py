@@ -8,6 +8,7 @@ Provides helpers for:
 
 Requires CLOUDFLARE_API_TOKEN and CLOUDFLARE_ZONE_ID in .env.
 """
+
 import httpx
 from typing import Optional
 from alphaedge.config import settings
@@ -28,6 +29,7 @@ def _zone_url(path: str = "") -> str:
 
 
 # ── DNS records ──────────────────────────────────────────────────
+
 
 def list_dns_records(record_type: Optional[str] = None, name: Optional[str] = None) -> list[dict]:
     """List DNS records for the zone, optionally filtered."""
@@ -77,12 +79,16 @@ def upsert_dns_record(
             record_id = existing[0]["id"]
             resp = httpx.put(
                 _zone_url(f"/dns_records/{record_id}"),
-                headers=_headers(), json=payload, timeout=15,
+                headers=_headers(),
+                json=payload,
+                timeout=15,
             )
         else:
             resp = httpx.post(
                 _zone_url("/dns_records"),
-                headers=_headers(), json=payload, timeout=15,
+                headers=_headers(),
+                json=payload,
+                timeout=15,
             )
         resp.raise_for_status()
         result = resp.json().get("result", {})
@@ -98,7 +104,8 @@ def delete_dns_record(record_id: str) -> bool:
     try:
         resp = httpx.delete(
             _zone_url(f"/dns_records/{record_id}"),
-            headers=_headers(), timeout=15,
+            headers=_headers(),
+            timeout=15,
         )
         resp.raise_for_status()
         return True
@@ -108,6 +115,7 @@ def delete_dns_record(record_id: str) -> bool:
 
 
 # ── Cache management ─────────────────────────────────────────────
+
 
 def purge_cache(files: Optional[list[str]] = None) -> bool:
     """
@@ -122,7 +130,9 @@ def purge_cache(files: Optional[list[str]] = None) -> bool:
         payload = {"files": files} if files else {"purge_everything": True}
         resp = httpx.post(
             _zone_url("/purge_cache"),
-            headers=_headers(), json=payload, timeout=15,
+            headers=_headers(),
+            json=payload,
+            timeout=15,
         )
         resp.raise_for_status()
         log.info(f"Cloudflare cache purged ({'selective' if files else 'full'})")
@@ -133,6 +143,7 @@ def purge_cache(files: Optional[list[str]] = None) -> bool:
 
 
 # ── Zone info ────────────────────────────────────────────────────
+
 
 def get_zone_info() -> Optional[dict]:
     """Return basic zone info (status, name servers, etc.)."""
@@ -156,6 +167,7 @@ def check_domain_status() -> str:
 
 
 # ── Convenience: setup AlphaEdge DNS ─────────────────────────────
+
 
 def setup_alphaedge_dns(server_ip: str) -> dict:
     """

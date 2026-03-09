@@ -11,13 +11,13 @@ Security:
   - Token parsing errors logged but never echoed to clients (OWASP A07).
   - user_id is validated before being interpolated into Clerk API URL.
 """
+
 import re
 import time
 from typing import Optional
-from functools import lru_cache
 
 import httpx
-from fastapi import Depends, HTTPException, Request, status
+from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 
@@ -30,6 +30,7 @@ _bearer = HTTPBearer(auto_error=False)
 
 class ClerkUser(BaseModel):
     """Minimal representation of an authenticated Clerk user."""
+
     user_id: str
     email: Optional[str] = None
     username: Optional[str] = None
@@ -101,6 +102,7 @@ def _verify_clerk_token(token: str) -> dict:
 
 
 # ── FastAPI dependencies ─────────────────────────────────────────
+
 
 async def get_current_user(
     credentials: Optional[HTTPAuthorizationCredentials] = Depends(_bearer),

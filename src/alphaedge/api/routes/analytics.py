@@ -6,9 +6,10 @@ Security:
   - SentimentRequest moved to schemas.py with length limits & extra="forbid".
   - Error responses sanitised (no raw exception details).
 """
+
 import re
 
-from fastapi import APIRouter, HTTPException, Depends, Path, Query
+from fastapi import APIRouter, HTTPException, Depends, Path
 from alphaedge.api.dependencies import get_predictor
 from alphaedge.api.schemas import SentimentRequest
 from alphaedge.core.predictor import AlphaEdge

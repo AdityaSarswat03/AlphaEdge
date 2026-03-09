@@ -1,6 +1,7 @@
 """
 Core AlphaEdge Predictor – the main entry-point class.
 """
+
 from typing import Optional, Dict, Any, List
 from datetime import datetime, timedelta
 import pandas as pd
@@ -76,14 +77,15 @@ class AlphaEdge:
         feature_cols = self.engineer.get_feature_columns()
 
         # Remove non-numeric
-        feature_cols = [c for c in feature_cols if c in features.columns and features[c].dtype in ("float64", "float32", "int64", "int32")]
+        feature_cols = [
+            c
+            for c in feature_cols
+            if c in features.columns
+            and features[c].dtype in ("float64", "float32", "int64", "int32")
+        ]
 
         # Defense-in-depth: sanitise any residual inf/NaN in feature matrix
-        features[feature_cols] = (
-            features[feature_cols]
-            .replace([np.inf, -np.inf], np.nan)
-            .fillna(0)
-        )
+        features[feature_cols] = features[feature_cols].replace([np.inf, -np.inf], np.nan).fillna(0)
 
         # 4. If model not trained – do a quick on-the-fly fit
         if not self.model.is_trained:

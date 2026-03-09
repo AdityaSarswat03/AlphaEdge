@@ -4,6 +4,7 @@ Firebase database & backend utilities for AlphaEdge.
 Uses firebase-admin SDK for Firestore (NoSQL) and optionally
 Realtime Database. Falls back gracefully if Firebase is not configured.
 """
+
 import json
 from typing import Any, Optional
 from alphaedge.config import settings
@@ -32,9 +33,12 @@ def _init_firebase():
             # Use Application Default Credentials (ADC) — works on GCP
             cred = credentials.ApplicationDefault()
 
-        _app = firebase_admin.initialize_app(cred, {
-            "projectId": settings.firebase_project_id,
-        })
+        _app = firebase_admin.initialize_app(
+            cred,
+            {
+                "projectId": settings.firebase_project_id,
+            },
+        )
         _db = firestore.client()
         log.info(f"Firebase Firestore initialised (project: {settings.firebase_project_id})")
     except Exception as e:
@@ -52,6 +56,7 @@ def get_firestore():
 
 
 # ── CRUD helpers ─────────────────────────────────────────────────
+
 
 def save_document(collection: str, doc_id: str, data: dict[str, Any]) -> bool:
     """Upsert a document in Firestore."""
@@ -98,6 +103,7 @@ def query_collection(
             ref = ref.where(field, op, value)
         if order_by:
             from google.cloud.firestore_v1 import Query
+
             ref = ref.order_by(order_by, direction=Query.DESCENDING)
         docs = ref.limit(limit).stream()
         return [{"id": d.id, **d.to_dict()} for d in docs]
@@ -134,9 +140,11 @@ def check_connection() -> bool:
 
 # ── Prediction storage helpers ───────────────────────────────────
 
+
 def save_prediction(ticker: str, prediction: dict) -> bool:
     """Persist a prediction result to Firestore."""
     from datetime import datetime
+
     doc_id = f"{ticker}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}"
     data = {
         "ticker": ticker,
@@ -161,8 +169,14 @@ def get_prediction_history(ticker: str, limit: int = 50) -> list[dict]:
 def save_backtest_result(ticker: str, strategy: str, result: dict) -> bool:
     """Persist a backtest result."""
     from datetime import datetime
+
     doc_id = f"{ticker}_{strategy}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}"
-    data = {"ticker": ticker, "strategy": strategy, "timestamp": datetime.utcnow().isoformat(), **result}
+    data = {
+        "ticker": ticker,
+        "strategy": strategy,
+        "timestamp": datetime.utcnow().isoformat(),
+        **result,
+    }
     return save_document("backtest_results", doc_id, data)
 
 

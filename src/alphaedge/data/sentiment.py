@@ -11,18 +11,17 @@ from typing import Dict, List
 from alphaedge.logger import log
 
 
-# Simple financial lexicon for rule-based scoring
-_POSITIVE = {
-    "surge", "rally", "gain", "profit", "bullish", "upgrade", "beat",
-    "record", "growth", "strong", "optimistic", "outperform", "buy",
-    "boom", "soar", "jump", "positive", "recovery", "dividend",
-}
-_NEGATIVE = {
-    "crash", "fall", "loss", "bearish", "downgrade", "miss", "decline",
-    "weak", "cut", "sell", "plunge", "drop", "negative", "recession",
-    "default", "risk", "correction", "slump", "layoff", "warning",
-}
-
+# Simple financial lexicon for rule-based scoring (using prefixes)
+_POSITIVE = (
+    "surge", "rally", "gain", "profit", "bull", "upgrade", "beat",
+    "record", "growth", "strong", "optim", "outperform", "buy",
+    "boom", "soar", "jump", "positiv", "recover", "dividend",
+)
+_NEGATIVE = (
+    "crash", "fall", "loss", "bear", "downgrade", "miss", "declin",
+    "weak", "cut", "sell", "plunge", "drop", "negativ", "recession",
+    "default", "risk", "correct", "slump", "layoff", "warn", "plummet"
+)
 
 class SentimentAnalyzer:
     """Analyze sentiment of financial headlines / articles."""
@@ -61,8 +60,8 @@ class SentimentAnalyzer:
     @staticmethod
     def _lexicon_score(text: str) -> Dict[str, float]:
         words = set(re.findall(r"[a-z]+", text.lower()))
-        pos = len(words & _POSITIVE)
-        neg = len(words & _NEGATIVE)
+        pos = sum(1 for w in words if any(w.startswith(p) for p in _POSITIVE))
+        neg = sum(1 for w in words if any(w.startswith(n) for n in _NEGATIVE))
         total = pos + neg or 1
         compound = (pos - neg) / total
         return {

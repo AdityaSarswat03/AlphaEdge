@@ -1,6 +1,7 @@
 """
 Shared FastAPI dependencies (predictor singleton + Clerk auth).
 """
+
 from functools import lru_cache
 from alphaedge.core.predictor import AlphaEdge
 from alphaedge.auth import get_current_user, get_optional_user, ClerkUser  # noqa: F401

@@ -5,9 +5,9 @@ Security:
   - Strategy now validated at schema level (Literal type).
   - Error responses sanitised.
 """
-from fastapi import APIRouter, HTTPException, Depends
+
+from fastapi import APIRouter, HTTPException
 from alphaedge.api.schemas import BacktestRequest, BacktestResponse
-from alphaedge.api.dependencies import get_predictor
 from alphaedge.backtesting.engine import Backtester
 from alphaedge.backtesting.strategy import STRATEGIES
 from alphaedge.logger import log
@@ -27,7 +27,9 @@ async def run_backtest(request: BacktestRequest):
     # but we double-check against the runtime dict in case it drifts.
     if request.strategy not in STRATEGIES:
         # OWASP: Don't enumerate internal strategy names in production.
-        log.warning(f"Strategy mismatch: schema accepted '{request.strategy}' but STRATEGIES dict doesn't contain it")
+        log.warning(
+            f"Strategy mismatch: schema accepted '{request.strategy}' but STRATEGIES dict doesn't contain it"
+        )
         raise HTTPException(
             status_code=400,
             detail="Unknown strategy.",

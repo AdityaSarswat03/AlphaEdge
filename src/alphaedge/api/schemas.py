@@ -8,9 +8,10 @@ Security hardening (OWASP):
   - Dates are validated at schema level via a ``field_validator``.
   - Strategy is restricted to a ``Literal`` enum.
 """
+
 import re
 from datetime import datetime
-from typing import Literal, Optional, List, Dict
+from typing import Literal, Optional, List
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -20,15 +21,15 @@ _TICKER_PATTERN = r"^[A-Z0-9&._-]{1,20}$"
 _TICKER_DESCRIPTION = "NSE ticker symbol (e.g. RELIANCE, TCS). 1-20 uppercase alphanumeric chars."
 
 # Allowed backtesting strategies (must match keys in STRATEGIES dict)
-ALLOWED_STRATEGIES = Literal[
-    "buy_and_hold", "mean_reversion", "momentum", "rsi"
-]
+ALLOWED_STRATEGIES = Literal["buy_and_hold", "mean_reversion", "momentum", "rsi"]
 
 
 # ── Prediction Schemas ───────────────────────────────────────────
 
+
 class PredictionRequest(BaseModel):
     """Request body for single-stock prediction."""
+
     model_config = ConfigDict(extra="forbid")  # OWASP: reject unknown fields
 
     ticker: str = Field(
@@ -66,6 +67,7 @@ class PredictionResponse(BaseModel):
 
 class BatchPredictionRequest(BaseModel):
     """Request body for multi-stock batch prediction."""
+
     model_config = ConfigDict(extra="forbid")
 
     tickers: List[str] = Field(
@@ -88,9 +90,7 @@ class BatchPredictionRequest(BaseModel):
                 raise ValueError(f"Each ticker must be a string, got {type(t).__name__}")
             t = t.strip().upper()
             if not re.match(_TICKER_PATTERN, t):
-                raise ValueError(
-                    f"Invalid ticker '{t}'. Must match {_TICKER_PATTERN}"
-                )
+                raise ValueError(f"Invalid ticker '{t}'. Must match {_TICKER_PATTERN}")
             cleaned.append(t)
         return cleaned
 
@@ -101,8 +101,10 @@ class TopPicksResponse(BaseModel):
 
 # ── Backtesting Schemas ──────────────────────────────────────────
 
+
 class BacktestRequest(BaseModel):
     """Request body for running a backtest."""
+
     model_config = ConfigDict(extra="forbid")
 
     ticker: str = Field(
@@ -173,11 +175,13 @@ class BacktestResponse(BaseModel):
 
 # ── Analytics Schemas ────────────────────────────────────────────
 
+
 class SentimentRequest(BaseModel):
     """Request body for sentiment analysis.
 
     OWASP: length limits prevent denial-of-service via oversized payloads.
     """
+
     model_config = ConfigDict(extra="forbid")
 
     text: str = Field(
@@ -197,9 +201,7 @@ class SentimentRequest(BaseModel):
         """Enforce per-item length limit."""
         for i, t in enumerate(v):
             if len(t) > 5_000:
-                raise ValueError(
-                    f"texts[{i}] exceeds 5 000 character limit ({len(t)} chars)."
-                )
+                raise ValueError(f"texts[{i}] exceeds 5 000 character limit ({len(t)} chars).")
         return v
 
 

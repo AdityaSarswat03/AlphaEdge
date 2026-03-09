@@ -1,6 +1,7 @@
 """
 Performance metrics for backtesting.
 """
+
 import numpy as np
 import pandas as pd
 from typing import Dict, Any
@@ -37,7 +38,9 @@ class PerformanceMetrics:
         sharpe = (annual_return - risk_free_rate) / annual_vol if annual_vol > 0 else 0.0
 
         # Sortino (down-side deviation)
-        downside = returns[returns < 0].std() * np.sqrt(252) if len(returns[returns < 0]) > 0 else 1e-6
+        downside = (
+            returns[returns < 0].std() * np.sqrt(252) if len(returns[returns < 0]) > 0 else 1e-6
+        )
         sortino = (annual_return - risk_free_rate) / downside
 
         # Max drawdown

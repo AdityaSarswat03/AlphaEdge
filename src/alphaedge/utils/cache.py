@@ -1,11 +1,11 @@
 """
 Redis caching utility (optional – gracefully degrades to in-memory dict).
 """
+
 import json
 import hashlib
 from typing import Any, Optional
 from alphaedge.config import settings
-from alphaedge.logger import log
 
 _memory_cache: dict = {}
 
@@ -69,6 +69,8 @@ def cache_clear(prefix: Optional[str] = None) -> None:
         _redis_client.flushdb()
     else:
         if prefix:
-            _memory_cache = {k: v for k, v in _memory_cache.items() if not k.startswith(f"alphaedge:{prefix}:")}
+            _memory_cache = {
+                k: v for k, v in _memory_cache.items() if not k.startswith(f"alphaedge:{prefix}:")
+            }
         else:
             _memory_cache.clear()

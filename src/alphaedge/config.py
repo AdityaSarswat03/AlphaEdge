@@ -1,7 +1,7 @@
 """
 Configuration Management for AlphaEdge
 """
-import os
+
 from pathlib import Path
 from typing import List, Optional
 from pydantic_settings import BaseSettings
@@ -31,24 +31,24 @@ class Settings(BaseSettings):
 
     # ── Firebase (Database & Backend) ────────────────────────────
     firebase_project_id: str = ""
-    firebase_credentials_path: str = ""          # path to service-account JSON
+    firebase_credentials_path: str = ""  # path to service-account JSON
     firebase_credentials_json: str = Field(default="", repr=False)  # repr=False: hide from logs
-    firebase_storage_bucket: str = ""            # e.g. "alphaedge-xxxxx.appspot.com"
-    firebase_database_url: str = ""              # Realtime DB (optional)
+    firebase_storage_bucket: str = ""  # e.g. "alphaedge-xxxxx.appspot.com"
+    firebase_database_url: str = ""  # Realtime DB (optional)
 
     # ── Clerk (Authentication) ───────────────────────────────────
-    clerk_publishable_key: str = ""              # pk_live_… or pk_test_…
+    clerk_publishable_key: str = ""  # pk_live_… or pk_test_…
     clerk_secret_key: str = Field(default="", repr=False)  # OWASP: never log secrets
-    clerk_domain: str = ""                       # e.g. "your-app.clerk.accounts.dev"
-    enable_clerk_auth: bool = False              # toggle off for local dev
+    clerk_domain: str = ""  # e.g. "your-app.clerk.accounts.dev"
+    enable_clerk_auth: bool = False  # toggle off for local dev
 
     # ── Cloudflare (DNS & CDN) ───────────────────────────────────
     cloudflare_api_token: str = Field(default="", repr=False)
     cloudflare_zone_id: str = ""
     cloudflare_account_id: str = ""
-    domain_name: str = "alphaedge.ai"            # your Cloudflare-managed domain
-    api_subdomain: str = "api"                   # api.alphaedge.ai
-    dashboard_subdomain: str = "app"             # app.alphaedge.ai
+    domain_name: str = "alphaedge.ai"  # your Cloudflare-managed domain
+    api_subdomain: str = "api"  # api.alphaedge.ai
+    dashboard_subdomain: str = "app"  # app.alphaedge.ai
 
     # ── Redis (optional cache) ───────────────────────────────────
     redis_host: str = "localhost"
@@ -137,7 +137,7 @@ class Settings(BaseSettings):
     news_api_key: str = Field(default="", repr=False)
 
     # ── GitHub ───────────────────────────────────────────────────
-    github_repo: str = "adityas/AlphaEdge"       # owner/repo
+    github_repo: str = "adityas/AlphaEdge"  # owner/repo
     github_token: str = Field(default="", repr=False)
 
     class Config:

@@ -1,9 +1,9 @@
 """
 SHAP-based model explainability.
 """
+
 import numpy as np
-import pandas as pd
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 from alphaedge.logger import log
 
 
@@ -23,6 +23,7 @@ class ModelExplainer:
         """
         try:
             import shap
+
             self._explainer = shap.TreeExplainer(model)
             log.info("SHAP explainer initialised")
         except ImportError:
@@ -38,15 +39,13 @@ class ModelExplainer:
         if self._explainer is None:
             return {"error": "Explainer not initialised"}
 
-        import shap
         shap_values = self._explainer.shap_values(X)
 
         # Mean absolute importance across the batch
         mean_abs = np.abs(shap_values).mean(axis=0)
         top_idx = np.argsort(mean_abs)[::-1][:10]
         top_features = [
-            {"feature": feature_names[i], "importance": float(mean_abs[i])}
-            for i in top_idx
+            {"feature": feature_names[i], "importance": float(mean_abs[i])} for i in top_idx
         ]
 
         return {

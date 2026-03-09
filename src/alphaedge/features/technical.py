@@ -1,6 +1,7 @@
 """
 Technical Indicators using the `ta` library (pure-Python, no TA-Lib C dep).
 """
+
 import pandas as pd
 import numpy as np
 from ta import trend, momentum, volatility, volume as ta_vol
@@ -81,5 +82,7 @@ class TechnicalIndicators:
         cum_vol = vol.rolling(window=20).sum().replace(0, np.nan)
         df["VWAP_20"] = cum_tp_vol / cum_vol
 
-        log.info(f"Added {len([c for c in df.columns if c not in ('Date','Open','High','Low','Close','Volume','Symbol')])} technical indicators")
+        log.info(
+            f"Added {len([c for c in df.columns if c not in ('Date','Open','High','Low','Close','Volume','Symbol')])} technical indicators"
+        )
         return df

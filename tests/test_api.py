@@ -1,6 +1,7 @@
 """
 Tests for FastAPI endpoints.
 """
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -8,6 +9,7 @@ from fastapi.testclient import TestClient
 @pytest.fixture
 def client():
     from alphaedge.api.main import app
+
     return TestClient(app)
 
 
@@ -48,10 +50,13 @@ class TestBacktestEndpoints:
         assert isinstance(data, (list, dict))
 
     def test_backtest_post(self, client):
-        resp = client.post("/api/v1/backtest", json={
-            "ticker": "RELIANCE",
-            "strategy": "buy_and_hold",
-        })
+        resp = client.post(
+            "/api/v1/backtest",
+            json={
+                "ticker": "RELIANCE",
+                "strategy": "buy_and_hold",
+            },
+        )
         assert resp.status_code in (200, 422, 500, 503)
 
 
